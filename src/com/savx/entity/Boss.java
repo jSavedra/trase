@@ -25,7 +25,7 @@ public class Boss extends Entity {
 	private int maxFrames = 5;
 	private int currentAnimation = 0;
 	private int maxAnimation = 0;
-	
+
 	private int damagedFrames = 0;
 
 	private int maskX = 4;
@@ -38,6 +38,8 @@ public class Boss extends Entity {
 	private boolean isDamaged = false;
 
 	private String state = "First State";
+
+	public static boolean win = false;
 
 	public Boss(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -58,6 +60,7 @@ public class Boss extends Entity {
 	}
 
 	public void update() {
+		win = false;
 		if (!isCollidingWithPlayer()) {
 			if ((int) x < Game.player.getX() - 5 && World.isCollidingWithTile((int) (x + spd), this.getY())) {
 				dir = leftDir;
@@ -83,7 +86,9 @@ public class Boss extends Entity {
 		collisionBullet();
 
 		if (life <= 0) {
-			System.exit(1);
+			win = true;
+			Game.gameState = "RestartWin";
+			destroySelf();
 		}
 
 		frames++;
@@ -94,7 +99,7 @@ public class Boss extends Entity {
 				currentAnimation = 0;
 			}
 		}
-		
+
 		if (isDamaged) {
 			damagedFrames++;
 			if (damagedFrames >= 5) {
@@ -146,6 +151,10 @@ public class Boss extends Entity {
 				g.drawImage(damagedLeftBoss, this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 		}
+	}
+
+	public void destroySelf() {
+		Game.boss.remove(this);
 	}
 
 	public void collisionBullet() {

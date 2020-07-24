@@ -116,7 +116,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			// Levels.
 
 			if (currentLevel == 1 && enemy1.size() == 0 && enemy2.size() == 0) {
-				currentLevel++;
+				currentLevel += 5;
 				gameState = "Playing";
 				if (currentLevel > maxLevel) {
 					currentLevel = 1;
@@ -162,16 +162,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			}
 
 			if (currentLevel == 6 && boss.size() == 0) {
-				currentLevel++;
-				if (currentLevel > maxLevel) {
-					currentLevel = 1;
-				}
-				String newLevel = "level" + currentLevel + ".png";
-				World.restartGame(newLevel);
+				gameState = "RestartWin";
 			}
 		}
 
-		if (gameState == "Restart" && player.restart == true) {
+		if (gameState == "Restart" && player.restart == true || gameState == "RestartWin" && Boss.win) {
 			gameState = "Playing";
 			currentLevel = 2;
 			String newLevel = "level" + currentLevel + ".png";
@@ -223,6 +218,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			g.setColor(new Color(250, 250, 250));
 			g.drawString("\r\n" + "Press the left button to shoot", 300, 700);
 		}
+
 		if (gameState == "Restart") {
 			Graphics2D g2 = (Graphics2D) g; // Works With Opacity.
 			g2.setColor(new Color(0, 0, 0, 220));
@@ -232,7 +228,17 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			g.drawString("Game Over", 450, 250);
 			g.drawString("Press Enter To Restart", 350, 350);
 		}
-		
+
+		else if (Boss.win && gameState == "RestartWin") {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(new Color(0, 0, 0, 220));
+			g2.fillRect(0, 0, width * (int) scale, height * (int) scale);
+			g.setColor(new Color(250, 250, 250));
+			g.setFont(new Font("Arial", Font.BOLD, 30));
+			g.drawString("You Win", 450, 250);
+			g.drawString("Press Enter To Restart", 350, 350);
+		}
+
 		bs.show();
 	}
 
